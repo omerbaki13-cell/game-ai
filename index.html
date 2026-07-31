@@ -359,7 +359,7 @@ let currentDoor = null;
 const keysDown = {};
 const touchState = { left: false, right: false, jump: false };
 
-// ===== SONGS (external files) =====
+// ===== SONGS (external files for GitHub Pages) =====
 const songs = [
   { id: 1, name: "bbno$ - Come to Brazil", file: "song1.m4a", audio: null, playing: false },
   { id: 2, name: "Around the World (Miku & Luka)", file: "song2.m4a", audio: null, playing: false }
@@ -518,4 +518,4 @@ function playJumpSound() {
   osc.frequency.setValueAtTime(300, audioCtx.currentTime);
   osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
   gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-  gain.gain.expon
+ 
