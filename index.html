@@ -6,53 +6,258 @@
 <title>Obby Speed Keyboard Escape</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { width: 100%; height: 100%; background: #050510; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow: hidden; touch-action: none; }
-  #gameWrap { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
-  #canvasWrap { position: relative; flex: 1; overflow: hidden; background: #050510; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #050510;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+    touch-action: none;
+  }
+  #gameWrap {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  #canvasWrap {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    background: #050510;
+  }
   canvas { display: block; width: 100%; height: 100%; }
-  #hud { position: absolute; top: 8px; left: 60px; right: 8px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10; }
-  #hud span { font-size: 13px; color: #fff; text-shadow: 0 0 8px rgba(0,255,255,0.5); font-weight: 600; }
+
+  #hud {
+    position: absolute;
+    top: 8px; left: 60px; right: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+  }
+  #hud span {
+    font-size: 13px;
+    color: #fff;
+    text-shadow: 0 0 8px rgba(0,255,255,0.5);
+    font-weight: 600;
+  }
   #hud .score { color: #00ff9f; font-weight: 700; text-shadow: 0 0 10px rgba(0,255,159,0.6); }
-  .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(5,5,16,0.92); color: white; text-align: center; padding: 24px; z-index: 20; }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,5,16,0.92);
+    color: white;
+    text-align: center;
+    padding: 24px;
+    z-index: 20;
+  }
   .overlay h2 { font-size: 22px; font-weight: 800; margin-bottom: 10px; text-shadow: 0 0 15px rgba(0,255,255,0.4); }
   .overlay p { font-size: 14px; color: #aaa; margin-bottom: 16px; line-height: 1.5; max-width: 320px; }
   .overlay .big-score { font-size: 36px; font-weight: 800; color: #00ff9f; margin-bottom: 6px; text-shadow: 0 0 20px rgba(0,255,159,0.5); }
-  .btn { padding: 12px 28px; border-radius: 12px; border: none; background: #3b82f6; color: white; font-weight: 700; font-size: 15px; cursor: pointer; margin: 4px; min-width: 160px; touch-action: manipulation; font-family: inherit; box-shadow: 0 0 15px rgba(59,130,246,0.3); transition: all 0.15s; }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: none;
+    background: #3b82f6;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 4px;
+    min-width: 160px;
+    touch-action: manipulation;
+    font-family: inherit;
+    box-shadow: 0 0 15px rgba(59,130,246,0.3);
+    transition: all 0.15s;
+  }
+  .btn:hover { box-shadow: 0 0 25px rgba(59,130,246,0.5); }
   .btn:active { transform: scale(0.96); }
   .btn-outline { background: transparent; border: 2px solid #3b82f6; }
   .btn-music { background: #7c3aed; border: 2px solid #7c3aed; box-shadow: 0 0 15px rgba(124,58,237,0.3); }
+  .btn-music:hover { box-shadow: 0 0 25px rgba(124,58,237,0.5); }
   .btn-back { background: #334155; border: 2px solid #334155; }
   .btn-market { background: #f59e0b; border: 2px solid #f59e0b; color: #000; box-shadow: 0 0 15px rgba(245,158,11,0.3); }
-  #controls { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px 20px; gap: 12px; background: #050510; z-index: 15; }
+  .btn-market:hover { box-shadow: 0 0 25px rgba(245,158,11,0.5); }
+
+  #controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px 20px;
+    gap: 12px;
+    background: #050510;
+    z-index: 15;
+  }
   .ctrl-group { display: flex; gap: 10px; align-items: center; }
-  .ctrl-btn { width: 64px; height: 64px; border-radius: 50%; border: 2px solid rgba(0,255,255,0.3); background: rgba(0,255,255,0.06); color: white; font-size: 22px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; box-shadow: 0 0 10px rgba(0,255,255,0.1); }
+  .ctrl-btn {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,255,255,0.3);
+    background: rgba(0,255,255,0.06);
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: 0 0 10px rgba(0,255,255,0.1);
+  }
   .ctrl-btn:active { background: rgba(0,255,255,0.2); transform: scale(0.92); box-shadow: 0 0 20px rgba(0,255,255,0.3); }
-  .ctrl-btn.jump { width: 72px; height: 72px; background: rgba(0,255,159,0.15); border-color: rgba(0,255,159,0.4); font-size: 18px; box-shadow: 0 0 15px rgba(0,255,159,0.2); }
+  .ctrl-btn.jump {
+    width: 72px; height: 72px;
+    background: rgba(0,255,159,0.15);
+    border-color: rgba(0,255,159,0.4);
+    font-size: 18px;
+    box-shadow: 0 0 15px rgba(0,255,159,0.2);
+  }
   .ctrl-btn.jump:active { background: rgba(0,255,159,0.35); box-shadow: 0 0 25px rgba(0,255,159,0.4); }
-  .skin-list { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 300px; max-height: 280px; overflow-y: auto; margin-bottom: 12px; }
-  .skin-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 2px solid transparent; cursor: pointer; transition: all 0.15s; }
-  .skin-item.active { border-color: #00ff9f; background: rgba(0,255,159,0.1); box-shadow: 0 0 15px rgba(0,255,159,0.2); }
+
+  .song-list, .skin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 300px;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+  }
+  .song-item, .skin-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .song-item:hover, .skin-item:hover { background: rgba(255,255,255,0.1); border-color: rgba(0,255,255,0.3); }
+  .song-item.active, .skin-item.active {
+    border-color: #00ff9f;
+    background: rgba(0,255,159,0.1);
+    box-shadow: 0 0 15px rgba(0,255,159,0.2);
+  }
   .skin-item.locked { opacity: 0.4; }
-  .skin-item .skin-preview { width: 24px; height: 24px; border-radius: 4px; margin-right: 10px; box-shadow: 0 0 8px currentColor; }
+  .skin-item .skin-preview {
+    width: 24px; height: 24px; border-radius: 4px; margin-right: 10px;
+    box-shadow: 0 0 8px currentColor;
+  }
   .skin-item .skin-name { font-size: 13px; font-weight: 600; flex: 1; text-align: left; }
-  .skin-item .skin-price { font-size: 12px; color: #fbbf24; font-weight: 700; }
-  #coinDisplay { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 12px; font-size: 13px; color: #fbbf24; font-weight: 700; z-index: 11; pointer-events: none; }
-  #nowPlaying { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 6px 16px; border-radius: 20px; font-size: 12px; color: #00ff9f; z-index: 12; pointer-events: none; opacity: 0; transition: opacity 0.3s; text-shadow: 0 0 8px rgba(0,255,159,0.4); }
+  .skin-item .skin-price { font-size: 12px; color: #fbbf24; font-weight: 700; text-shadow: 0 0 5px rgba(251,191,36,0.5); }
+  .skin-item .skin-status { font-size: 13px; }
+
+  #nowPlaying {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #00ff9f;
+    z-index: 12;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-shadow: 0 0 8px rgba(0,255,159,0.4);
+  }
   #nowPlaying.show { opacity: 1; }
-  .music-row { display: flex; gap: 6px; }
-  .music-row .btn { min-width: auto; flex: 1; font-size: 13px; padding: 10px 12px; }
-  #kbOverlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(5,5,16,0.95); z-index: 25; }
-  #kbOverlay h3 { color: white; font-size: 18px; margin-bottom: 16px; }
-  .kb-timer { width: 220px; height: 8px; background: #222; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
-  .kb-timer-fill { height: 100%; background: #ef4444; border-radius: 4px; transition: width 0.05s linear; }
-  .kb-keys-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center; max-width: 300px; }
-  .kkey { width: 48px; height: 48px; border: 2px solid #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: white; background: #0a0a1a; }
-  .kkey.done { border-color: #00ff9f; background: #00ff9f; color: #000; }
-  .kkey.current { border-color: #00d4ff; box-shadow: 0 0 0 3px rgba(0,212,255,0.3); }
+
+  #coinDisplay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.6);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    color: #fbbf24;
+    font-weight: 700;
+    z-index: 11;
+    pointer-events: none;
+    text-shadow: 0 0 8px rgba(251,191,36,0.5);
+  }
+
+  #kbOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,5,16,0.95);
+    z-index: 25;
+  }
+  #kbOverlay h3 { color: white; font-size: 18px; margin-bottom: 16px; text-shadow: 0 0 10px rgba(0,255,255,0.3); }
+  .kb-timer {
+    width: 220px; height: 8px;
+    background: #222;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(239,68,68,0.3);
+  }
+  .kb-timer-fill {
+    height: 100%;
+    background: #ef4444;
+    border-radius: 4px;
+    transition: width 0.05s linear;
+    box-shadow: 0 0 10px rgba(239,68,68,0.5);
+  }
+  .kb-keys-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 300px;
+  }
+  .kkey {
+    width: 48px; height: 48px;
+    border: 2px solid #555;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; color: white;
+    background: #0a0a1a;
+    transition: all 0.15s;
+  }
+  .kkey.done { border-color: #00ff9f; background: #00ff9f; color: #000; box-shadow: 0 0 15px rgba(0,255,159,0.5); }
+  .kkey.current { border-color: #00d4ff; box-shadow: 0 0 0 3px rgba(0,212,255,0.3), 0 0 15px rgba(0,212,255,0.3); }
   .kkey.wrong { border-color: #ef4444; background: #ef4444; animation: kshake 0.3s; }
   @keyframes kshake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-  .kb-mobile-pad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-width: 320px; margin-top: 8px; }
-  .kb-mobile-btn { height: 48px; border-radius: 8px; border: 2px solid rgba(0,255,255,0.15); background: rgba(0,255,255,0.05); color: white; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: manipulation; }
+  .kb-mobile-pad {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    max-width: 320px;
+    margin-top: 8px;
+  }
+  .kb-mobile-btn {
+    height: 48px;
+    border-radius: 8px;
+    border: 2px solid rgba(0,255,255,0.15);
+    background: rgba(0,255,255,0.05);
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .kb-mobile-btn:active { background: rgba(0,255,255,0.15); transform: scale(0.95); }
+
   .hidden { display: none !important; }
 </style>
 </head>
@@ -60,49 +265,65 @@
 <div id="gameWrap">
   <div id="canvasWrap">
     <canvas id="gameCanvas"></canvas>
-    <div id="hud"><span>Seviye: <b id="hudLevel">1</b>/10</span><span class="score">Skor: <span id="hudScore">0</span></span></div>
+
+    <div id="hud">
+      <span>Seviye: <b id="hudLevel">1</b>/10</span>
+      <span class="score">Skor: <span id="hudScore">0</span></span>
+    </div>
+
     <div id="coinDisplay">💰 <span id="hudCoins">0</span></div>
+
     <div id="nowPlaying">🎵 <span id="npText">-</span></div>
-    <div style="position:absolute;top:8px;left:8px;z-index:11;"><button class="btn" style="min-width:auto;padding:8px 12px;font-size:13px;" onclick="togglePause()">⏸️</button></div>
+
+    <div style="position:absolute;top:8px;left:8px;z-index:11;">
+      <button class="btn" style="min-width:auto;padding:8px 12px;font-size:13px;" onclick="togglePause()">⏸️</button>
+    </div>
+
     <div class="overlay" id="startOverlay">
       <h2>🏃 Obby Speed Keyboard Escape</h2>
-      <p>10 bölümlük neon parkuru tamamla!<br>Her kapı bir şifre!<br><b>PC:</b> A/D veya ←/→ ile hareket, Space ile zıpla</p>
+      <p>10 bölümlük neon parkuru tamamla!<br>Her kapı bir checkpoint!<br><b>PC:</b> A/D veya ←/→ ile hareket, Space ile zıpla</p>
       <div style="display:flex;flex-direction:column;gap:6px;">
         <button class="btn" onclick="startGame()">▶ Oyuna Başla</button>
-        <button class="btn btn-music" onclick="toggleMusic()">🎵 Müzik: <span id="musicStatus">Kapalı</span></button>
-        <div class="music-row">
-          <button class="btn btn-outline" style="min-width:auto;" onclick="selectTrack(0)">1️⃣ Come To Brazil</button>
-          <button class="btn btn-outline" style="min-width:auto;" onclick="selectTrack(1)">2️⃣ Around A World</button>
-        </div>
+        <button class="btn btn-music" onclick="showSongs()">🎵 Şarkılar</button>
         <button class="btn btn-market" onclick="showMarket()">🛒 Market</button>
       </div>
     </div>
+
+    <div class="overlay hidden" id="songsOverlay">
+      <h2>🎵 Şarkılar</h2>
+      <p>Çalmak istediğin şarkıya tıkla. Tekrar tıklayınca durur.</p>
+      <div class="song-list" id="songList"></div>
+      <button class="btn btn-back" onclick="hideSongs()">← Geri</button>
+    </div>
+
     <div class="overlay hidden" id="marketOverlay">
       <h2>🛒 Skin Marketi</h2>
       <p>Coinlerinle neon skinler al! 💰 <b id="marketCoins">0</b></p>
       <div class="skin-list" id="skinList"></div>
       <button class="btn btn-back" onclick="hideMarket()">← Geri</button>
     </div>
+
     <div class="overlay hidden" id="winOverlay">
       <h2>🏆 Kaçış Tamamlandı!</h2>
       <p>Tüm 10 parkuru başarıyla tamamladın!</p>
       <div class="big-score" id="winScore">0</div>
-      <div><button class="btn" onclick="startGame()">Yeniden Oyna</button><button class="btn btn-outline" onclick="showMenu()">Menü</button></div>
+      <div>
+        <button class="btn" onclick="startGame()">Yeniden Oyna</button>
+        <button class="btn btn-outline" onclick="showMenu()">Menü</button>
+      </div>
     </div>
+
     <div class="overlay hidden" id="pauseOverlay">
       <h2>⏸️ Durduruldu</h2>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <button class="btn" onclick="resumeGame()">▶ Devam Et</button>
         <button class="btn" onclick="restartGame()">🔄 Yeniden Başla</button>
-        <button class="btn btn-music" onclick="toggleMusic()">🎵 Müzik: <span id="pauseMusicStatus">Kapalı</span></button>
-        <div class="music-row">
-          <button class="btn btn-outline" style="min-width:auto;" onclick="selectTrack(0)">1️⃣ Come To Brazil</button>
-          <button class="btn btn-outline" style="min-width:auto;" onclick="selectTrack(1)">2️⃣ Around A World</button>
-        </div>
+        <button class="btn btn-music" onclick="showSongsFromPause()">🎵 Şarkılar</button>
         <button class="btn btn-market" onclick="showMarketFromPause()">🛒 Market</button>
         <button class="btn btn-outline" onclick="showMenu()">📋 Ana Menü</button>
       </div>
     </div>
+
     <div id="kbOverlay" class="hidden">
       <h3>⌨️ 2 Harf - 15 Saniye!</h3>
       <div class="kb-timer"><div class="kb-timer-fill" id="kbTimerFill" style="width:100%"></div></div>
@@ -110,6 +331,7 @@
       <div class="kb-mobile-pad" id="kbMobilePad"></div>
     </div>
   </div>
+
   <div id="controls">
     <div class="ctrl-group">
       <div class="ctrl-btn" id="btnLeft" ontouchstart="touchBtn('left',true)" ontouchend="touchBtn('left',false)" onmousedown="touchBtn('left',true)" onmouseup="touchBtn('left',false)" onmouseleave="touchBtn('left',false)">←</div>
@@ -125,411 +347,174 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const wrap = document.getElementById('canvasWrap');
-let W = 800, H = 600;
-const GRAVITY = 0.6, JUMP = -11, FRICTION = 0.82, TOTAL_LEVELS = 10;
-let game = { running: false, level: 1, score: 0, state: 'menu', cameraX: 0, particles: [], stars: [], checkpointX: null };
+let W, H;
+
+const GRAVITY = 0.6, JUMP = -11, SPEED = 4.5, FRICTION = 0.82, TOTAL_LEVELS = 10;
+
+let game = { running: false, level: 1, score: 0, coins: 0, state: 'menu', cameraX: 0, particles: [], stars: [], checkpointX: null };
 let player = { x: 50, y: 250, w: 18, h: 18, vx: 0, vy: 0, onGround: false, facing: 1 };
-let platforms = [], spikes = [], doors = [], coinsArr = [], finish = null, levelWidth = 0;
+let platforms = [], spikes = [], doors = [], coins = [], finish = null, levelWidth = 0;
 let kb = { active: false, keys: [], current: 0, timeLeft: 0, maxTime: 0, timerId: null };
 let currentDoor = null;
 const keysDown = {};
 const touchState = { left: false, right: false, jump: false };
 
-const SKINS = [
-  { id: 'default', name: 'Neon Mavi', color: '#00d4ff', glow: '#00d4ff', price: 0, owned: true },
-  { id: 'green', name: 'Neon Yeşil', color: '#00ff9f', glow: '#00ff9f', price: 50, owned: false },
-  { id: 'red', name: 'Neon Kırmızı', color: '#ff4757', glow: '#ff4757', price: 100, owned: false },
-  { id: 'purple', name: 'Neon Mor', color: '#a29bfe', glow: '#a29bfe', price: 150, owned: false },
-  { id: 'gold', name: 'Altın', color: '#fbbf24', glow: '#fbbf24', price: 300, owned: false },
-  { id: 'rainbow', name: 'Gökkuşağı', color: '#ff6b6b', glow: '#ff6b6b', price: 500, owned: false }
+// ===== SONGS (external files for GitHub Pages) =====
+const songs = [
+  { id: 1, name: "bbno$ - Come to Brazil", file: "song1.m4a", audio: null, playing: false },
+  { id: 2, name: "Around the World (Miku & Luka)", file: "song2.m4a", audio: null, playing: false }
 ];
-let activeSkin = 'default';
-let totalCoins = 0;
-let ownedSkins = ['default'];
+let currentSongId = null;
+let songsOverlayReturnTo = 'start';
 
-// ===== MÜZİK (index.html ile aynı klasördeki song1.m4a / song2.m4a) =====
-const TRACKS = [
-  { name: 'Come To Brazil', file: 'song1.m4a' },
-  { name: 'Around A World', file: 'song2.m4a' }
-];
-let currentTrack = 0;
-let musicPlaying = false;
-let bgMusic = null;
-
-function initMusic() {
-  if (!bgMusic) {
-    bgMusic = new Audio(TRACKS[currentTrack].file);
-    bgMusic.loop = true;
-    bgMusic.volume = 0.4;
-    bgMusic.addEventListener('error', () => {
-      console.warn('Müzik dosyası bulunamadı: ' + TRACKS[currentTrack].file + ' (index.html ile aynı klasörde olmalı)');
-    });
+function initSongAudio(song) {
+  if (!song.audio) {
+    song.audio = new Audio(song.file);
+    song.audio.loop = true;
+    song.audio.volume = 0.6;
+    song.audio.addEventListener('ended', () => { song.playing = false; updateSongListUI(); updateNowPlaying(); });
   }
 }
 
-function toggleMusic() {
-  initMusic();
-  if (musicPlaying) {
-    bgMusic.pause();
-    musicPlaying = false;
-    setMusicStatusText('Kapalı');
-    document.getElementById('nowPlaying').classList.remove('show');
+function toggleSong(id) {
+  const song = songs.find(s => s.id === id);
+  if (!song) return;
+  initSongAudio(song);
+  if (song.playing) {
+    song.audio.pause();
+    song.audio.currentTime = 0;
+    song.playing = false;
+    if (currentSongId === id) currentSongId = null;
   } else {
-    bgMusic.play().catch(e => console.warn('Müzik çalma hatası:', e));
-    musicPlaying = true;
-    setMusicStatusText('Açık');
-    document.getElementById('npText').textContent = TRACKS[currentTrack].name;
-    document.getElementById('nowPlaying').classList.add('show');
+    songs.forEach(s => { if (s.id !== id && s.audio && s.playing) { s.audio.pause(); s.audio.currentTime = 0; s.playing = false; } });
+    song.audio.play().catch(e => console.log('Audio play failed:', e));
+    song.playing = true;
+    currentSongId = id;
+  }
+  updateSongListUI();
+  updateNowPlaying();
+}
+
+function stopAllSongs() {
+  songs.forEach(s => { if (s.audio && s.playing) { s.audio.pause(); s.audio.currentTime = 0; s.playing = false; } });
+  currentSongId = null;
+  updateNowPlaying();
+}
+
+function updateSongListUI() {
+  const list = document.getElementById('songList');
+  if (!list) return;
+  list.innerHTML = '';
+  songs.forEach(song => {
+    const div = document.createElement('div');
+    div.className = 'song-item' + (song.playing ? ' active' : '');
+    div.onclick = () => toggleSong(song.id);
+    div.innerHTML = `<span class="song-name">${song.name}</span><span class="song-status">${song.playing ? '⏸️' : '▶️'}</span>`;
+    list.appendChild(div);
+  });
+}
+
+function updateNowPlaying() {
+  const np = document.getElementById('nowPlaying');
+  const npText = document.getElementById('npText');
+  const playing = songs.find(s => s.playing);
+  if (playing) { npText.textContent = playing.name; np.classList.add('show'); }
+  else { np.classList.remove('show'); }
+}
+
+function showSongs() { songsOverlayReturnTo = 'start'; updateSongListUI(); document.getElementById('startOverlay').classList.add('hidden'); document.getElementById('songsOverlay').classList.remove('hidden'); }
+function showSongsFromPause() { songsOverlayReturnTo = 'pause'; updateSongListUI(); document.getElementById('pauseOverlay').classList.add('hidden'); document.getElementById('songsOverlay').classList.remove('hidden'); }
+function hideSongs() { document.getElementById('songsOverlay').classList.add('hidden'); if (songsOverlayReturnTo === 'pause') document.getElementById('pauseOverlay').classList.remove('hidden'); else document.getElementById('startOverlay').classList.remove('hidden'); }
+
+// ===== NEON SKINS =====
+const skins = [
+  { id: 'cyan',    name: 'Neon Cyan',    price: 0,   color: '#00d4ff', glow: 'rgba(0,212,255,0.8)' },
+  { id: 'magenta', name: 'Neon Magenta', price: 50,  color: '#ff00ff', glow: 'rgba(255,0,255,0.8)' },
+  { id: 'lime',    name: 'Neon Lime',    price: 50,  color: '#39ff14', glow: 'rgba(57,255,20,0.8)' },
+  { id: 'orange',  name: 'Neon Orange',  price: 100, color: '#ff6b00', glow: 'rgba(255,107,0,0.8)' },
+  { id: 'yellow',  name: 'Neon Yellow',  price: 100, color: '#ffea00', glow: 'rgba(255,234,0,0.8)' },
+  { id: 'purple',  name: 'Neon Purple',  price: 150, color: '#bd00ff', glow: 'rgba(189,0,255,0.8)' },
+  { id: 'red',     name: 'Neon Red',     price: 200, color: '#ff0055', glow: 'rgba(255,0,85,0.8)' }
+];
+let currentSkin = 'cyan';
+let unlockedSkins = ['cyan'];
+let totalCoins = 0;
+
+function loadProgress() {
+  try {
+    const s = localStorage.getItem('obby_unlocked_skins');
+    const c = localStorage.getItem('obby_current_skin');
+    const tc = localStorage.getItem('obby_total_coins');
+    if (s) unlockedSkins = JSON.parse(s);
+    if (c) currentSkin = c;
+    if (tc) totalCoins = parseInt(tc);
+  } catch(e) {}
+}
+function saveProgress() {
+  try {
+    localStorage.setItem('obby_unlocked_skins', JSON.stringify(unlockedSkins));
+    localStorage.setItem('obby_current_skin', currentSkin);
+    localStorage.setItem('obby_total_coins', String(totalCoins));
+  } catch(e) {}
+}
+
+function getSkin() { return skins.find(sk => sk.id === currentSkin) || skins[0]; }
+
+function showMarket() { document.getElementById('startOverlay').classList.add('hidden'); document.getElementById('marketOverlay').classList.remove('hidden'); renderMarket(); }
+function showMarketFromPause() { document.getElementById('pauseOverlay').classList.add('hidden'); document.getElementById('marketOverlay').classList.remove('hidden'); renderMarket(); }
+function hideMarket() { document.getElementById('marketOverlay').classList.add('hidden'); if (game.state === 'paused') document.getElementById('pauseOverlay').classList.remove('hidden'); else document.getElementById('startOverlay').classList.remove('hidden'); }
+
+function renderMarket() {
+  document.getElementById('marketCoins').textContent = totalCoins;
+  const list = document.getElementById('skinList');
+  list.innerHTML = '';
+  skins.forEach(skin => {
+    const isUnlocked = unlockedSkins.includes(skin.id);
+    const isSelected = currentSkin === skin.id;
+    const div = document.createElement('div');
+    div.className = 'skin-item' + (isSelected ? ' active' : '') + (isUnlocked ? '' : ' locked');
+    let status = isSelected ? '<span class="skin-status">✅ Seçili</span>' : isUnlocked ? '<span class="skin-status" style="color:#00ff9f">👆 Seç</span>' : `<span class="skin-price">💰 ${skin.price}</span>`;
+    div.innerHTML = `<div class="skin-preview" style="background:${skin.color};box-shadow:0 0 10px ${skin.glow}"></div><span class="skin-name">${skin.name}</span>${status}`;
+    div.onclick = () => handleSkinClick(skin);
+    list.appendChild(div);
+  });
+}
+
+function handleSkinClick(skin) {
+  if (currentSkin === skin.id) return;
+  if (unlockedSkins.includes(skin.id)) { currentSkin = skin.id; saveProgress(); renderMarket(); return; }
+  if (totalCoins >= skin.price) {
+    totalCoins -= skin.price; unlockedSkins.push(skin.id); currentSkin = skin.id;
+    saveProgress(); renderMarket(); updateHUD(); playSuccessSound();
+  } else {
+    playFailSound();
+    const list = document.getElementById('skinList');
+    list.style.animation = 'kshake 0.3s'; setTimeout(() => list.style.animation = '', 300);
   }
 }
 
-function setMusicStatusText(txt) {
-  const a = document.getElementById('musicStatus');
-  const b = document.getElementById('pauseMusicStatus');
-  if (a) a.textContent = txt;
-  if (b) b.textContent = txt;
-}
-
-function selectTrack(index) {
-  if (index === currentTrack && bgMusic) {
-    // Aynı şarkı seçildiyse sadece çal/durdur
-    toggleMusic();
-    return;
-  }
-  currentTrack = index;
-  const wasPlaying = musicPlaying;
-  if (bgMusic) {
-    bgMusic.pause();
-    bgMusic = null;
-  }
-  musicPlaying = false;
-  initMusic();
-  document.getElementById('npText').textContent = TRACKS[currentTrack].name;
-  if (wasPlaying) {
-    bgMusic.play().catch(e => console.warn('Müzik çalma hatası:', e));
-    musicPlaying = true;
-    setMusicStatusText('Açık');
-    document.getElementById('nowPlaying').classList.add('show');
-  }
-}
-
+// ===== AUDIO FX =====
 let audioCtx = null;
-function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
 function playTone(freq, duration, type, vol) {
   if (!audioCtx) return;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
-  osc.type = type;
+  osc.type = type || 'sine';
   osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+  gain.gain.setValueAtTime(vol || 0.08, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
   osc.connect(gain); gain.connect(audioCtx.destination);
   osc.start(); osc.stop(audioCtx.currentTime + duration);
 }
-function playJumpSound() { playTone(400, 0.15, 'square', 0.08); }
-function playCoinSound() { playTone(880, 0.1, 'sine', 0.08); playTone(1100, 0.1, 'sine', 0.06); }
-function playDoorSound() { playTone(600, 0.2, 'square', 0.1); playTone(800, 0.2, 'square', 0.1); }
-function playWinSound() { [523,659,784,1047].forEach((f,i) => setTimeout(() => playTone(f,0.3,'sine',0.1), i*150)); }
-function playFailSound() { playTone(200, 0.4, 'sawtooth', 0.1); }
-
-function resize() { W = wrap.clientWidth; H = wrap.clientHeight; canvas.width = W; canvas.height = H; }
-window.addEventListener('resize', resize);
-resize();
-
-function initStars() {
-  game.stars = [];
-  for (let i = 0; i < 80; i++) {
-    game.stars.push({ x: Math.random()*W, y: Math.random()*H, size: Math.random()*2+0.5, speed: Math.random()*0.5+0.1, alpha: Math.random()*0.5+0.3 });
-  }
-}
-
-function buildLevel(lvl) {
-  platforms = []; spikes = []; doors = []; coinsArr = []; finish = null;
-  const groundY = H - 80;
-  const startX = 50;
-  let x = 400;
-  platforms.push({ x: 0, y: groundY, w: 400, h: 40 });
-  const diff = lvl;
-  const platCount = 5 + diff;
-  for (let i = 0; i < platCount; i++) {
-    const gap = 60 + Math.random()*(30+diff*5);
-    const pw = 80 + Math.random()*120;
-    const py = groundY - Math.random()*(80+diff*15);
-    platforms.push({ x: x+gap, y: py, w: pw, h: 20 });
-    if (Math.random() > 0.3) coinsArr.push({ x: x+gap+pw/2-8, y: py-30, w:16, h:16, collected:false });
-    if (diff > 2 && Math.random() > 0.5) spikes.push({ x: x+gap+pw/2-10, y: py-12, w:20, h:12 });
-    x += gap + pw;
-    if ((i+1)%3===0 && i < platCount-1) {
-      doors.push({ x: x+20, y: groundY-50, w:30, h:50, open:false, passed:false });
-      platforms.push({ x: x+20-15, y: groundY, w:60, h:40 });
-      x += 80;
-    }
-  }
-  x += 100;
-  finish = { x: x, y: groundY-60, w:40, h:60 };
-  platforms.push({ x: x-20, y: groundY, w:80, h:40 });
-  levelWidth = x + 200;
-  player.x = startX; player.y = groundY-40; player.vx=0; player.vy=0;
-  game.cameraX = 0; game.checkpointX = null;
-}
-
-function spawnParticles(x,y,color,count) {
-  for (let i=0;i<count;i++) game.particles.push({ x,y, vx:(Math.random()-0.5)*6, vy:(Math.random()-0.5)*6, life:1, color, size:Math.random()*3+1 });
-}
-function updateParticles() {
-  for (let i=game.particles.length-1;i>=0;i--) {
-    const p = game.particles[i];
-    p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.life-=0.03;
-    if (p.life<=0) game.particles.splice(i,1);
-  }
-}
-
-function updatePlayer() {
-  let move = 0;
-  if (keysDown['ArrowLeft']||keysDown['KeyA']||touchState.left) move=-1;
-  if (keysDown['ArrowRight']||keysDown['KeyD']||touchState.right) move=1;
-  if (move!==0) { player.vx += move*0.8; player.facing = move; }
-  player.vx *= FRICTION;
-  player.vy += GRAVITY;
-  if ((keysDown['Space']||keysDown['ArrowUp']||keysDown['KeyW']||touchState.jump) && player.onGround) {
-    player.vy = JUMP; player.onGround = false; playJumpSound();
-    spawnParticles(player.x+player.w/2, player.y+player.h, '#00ff9f', 5);
-  }
-  player.x += player.vx; player.onGround = false;
-  for (const plat of platforms) {
-    if (rectCollide(player, plat)) {
-      if (player.vx>0) player.x = plat.x-player.w;
-      else if (player.vx<0) player.x = plat.x+plat.w;
-      player.vx = 0;
-    }
-  }
-  player.y += player.vy;
-  for (const plat of platforms) {
-    if (rectCollide(player, plat)) {
-      if (player.vy>0) { player.y=plat.y-player.h; player.vy=0; player.onGround=true; }
-      else if (player.vy<0) { player.y=plat.y+plat.h; player.vy=0; }
-    }
-  }
-  if (player.x<0) player.x=0;
-  if (player.y>H+100) respawn();
-  const targetCam = Math.max(0, player.x - W*0.3);
-  game.cameraX += (targetCam-game.cameraX)*0.1;
-  if (game.cameraX<0) game.cameraX=0;
-  if (game.cameraX>levelWidth-W) game.cameraX=levelWidth-W;
-}
-function rectCollide(a,b) { return a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y; }
-
-function respawn() {
-  playFailSound();
-  const groundY = H-80;
-  player.x = game.checkpointX!==null ? game.checkpointX : 50;
-  player.y = groundY-40; player.vx=0; player.vy=0;
-  game.score = Math.max(0, game.score-50);
-  updateHUD();
-  spawnParticles(player.x, player.y, '#ff4757', 10);
-}
-
-function checkDoor() {
-  for (const door of doors) {
-    if (door.open) {
-      if (player.x > door.x + door.w) {
-        game.checkpointX = door.x + door.w + 10;
-      }
-      continue;
-    }
-    if (player.x>door.x-20 && player.x<door.x+door.w+20 && Math.abs(player.y-door.y)<60 && !kb.active) {
-      startKeyboardChallenge(door);
-      return;
-    }
-  }
-}
-function checkCoins() {
-  for (const c of coinsArr) {
-    if (!c.collected && rectCollide(player,c)) {
-      c.collected=true; totalCoins++; game.score+=10;
-      playCoinSound(); spawnParticles(c.x+c.w/2,c.y+c.h/2,'#fbbf24',8); updateHUD();
-    }
-  }
-}
-function checkSpikes() { for (const s of spikes) if (rectCollide(player,s)) { respawn(); return; } }
-function checkFinish() {
-  if (!finish) return;
-  if (rectCollide(player,finish)) {
-    game.score += 200;
-    if (game.level>=TOTAL_LEVELS) winGame(); else nextLevel();
-  }
-}
-function nextLevel() { game.level++; updateHUD(); buildLevel(game.level); }
-function winGame() {
-  game.running = false; playWinSound();
-  document.getElementById('winScore').textContent = game.score;
-  document.getElementById('winOverlay').classList.remove('hidden');
-}
-
-function startKeyboardChallenge(door) {
-  kb.active = true; currentDoor = door; game.running = false;
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  kb.keys = [];
-  for (let i=0;i<2;i++) kb.keys.push(chars[Math.floor(Math.random()*chars.length)]);
-  kb.current = 0; kb.maxTime = 15; kb.timeLeft = kb.maxTime;
-  renderKbChallenge();
-  document.getElementById('kbOverlay').classList.remove('hidden');
-  if (kb.timerId) clearInterval(kb.timerId);
-  kb.timerId = setInterval(() => {
-    kb.timeLeft -= 0.05;
-    document.getElementById('kbTimerFill').style.width = Math.max(0,(kb.timeLeft/kb.maxTime)*100)+'%';
-    if (kb.timeLeft<=0) failKeyboardChallenge();
-  }, 50);
-}
-function renderKbChallenge() {
-  const row = document.getElementById('kbKeysRow'); row.innerHTML='';
-  kb.keys.forEach((k,i) => {
-    const div = document.createElement('div');
-    div.className = 'kkey' + (i<kb.current?' done':i===kb.current?' current':'');
-    div.textContent = k; row.appendChild(div);
-  });
-  const pad = document.getElementById('kbMobilePad'); pad.innerHTML='';
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(ch => {
-    const btn = document.createElement('div');
-    btn.className='kb-mobile-btn'; btn.textContent=ch;
-    btn.ontouchstart=(e)=>{e.preventDefault();handleKbInput(ch);};
-    btn.onmousedown=()=>handleKbInput(ch);
-    pad.appendChild(btn);
-  });
-}
-function handleKbInput(letter) {
-  if (!kb.active) return;
-  const keyEls = document.getElementById('kbKeysRow').children;
-  if (letter===kb.keys[kb.current]) {
-    kb.current++;
-    if (kb.current>=kb.keys.length) succeedKeyboardChallenge(); else renderKbChallenge();
-  } else {
-    if (keyEls[kb.current]) { keyEls[kb.current].classList.add('wrong'); setTimeout(()=>keyEls[kb.current]&&keyEls[kb.current].classList.remove('wrong'),300); }
-    playFailSound();
-  }
-}
-function succeedKeyboardChallenge() {
-  clearInterval(kb.timerId); kb.active=false;
-  document.getElementById('kbOverlay').classList.add('hidden');
-  if (currentDoor) { currentDoor.open=true; currentDoor.passed=true; spawnParticles(currentDoor.x+currentDoor.w/2,currentDoor.y+currentDoor.h/2,'#00ff9f',20); playDoorSound(); }
-  game.score+=100; updateHUD(); game.running=true; currentDoor=null;
-}
-function failKeyboardChallenge() {
-  clearInterval(kb.timerId); kb.active=false;
-  document.getElementById('kbOverlay').classList.add('hidden');
-  playFailSound(); respawn(); game.running=true; currentDoor=null;
-}
-
-function updateHUD() {
-  document.getElementById('hudLevel').textContent = game.level;
-  document.getElementById('hudScore').textContent = game.score;
-  document.getElementById('hudCoins').textContent = totalCoins;
-  const m = document.getElementById('marketCoins'); if (m) m.textContent = totalCoins;
-}
-
-function render() {
-  ctx.clearRect(0,0,W,H);
-  const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,'#0a0a2a'); grad.addColorStop(1,'#050510');
-  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
-  ctx.save();
-  for (const s of game.stars) {
-    ctx.globalAlpha = s.alpha; ctx.fillStyle='#fff';
-    ctx.beginPath(); ctx.arc(s.x,s.y,s.size,0,Math.PI*2); ctx.fill();
-    s.x -= s.speed; if (s.x<0) s.x=W;
-  }
-  ctx.restore();
-  ctx.save(); ctx.translate(-game.cameraX,0);
-  for (const p of platforms) {
-    ctx.fillStyle='#1a1a3a'; ctx.fillRect(p.x,p.y,p.w,p.h);
-    ctx.strokeStyle='#00d4ff'; ctx.lineWidth=2; ctx.shadowColor='#00d4ff'; ctx.shadowBlur=8;
-    ctx.strokeRect(p.x,p.y,p.w,p.h); ctx.shadowBlur=0;
-  }
-  ctx.fillStyle='#ef4444'; ctx.shadowColor='#ef4444'; ctx.shadowBlur=10;
-  for (const s of spikes) { ctx.beginPath(); ctx.moveTo(s.x,s.y+s.h); ctx.lineTo(s.x+s.w/2,s.y); ctx.lineTo(s.x+s.w,s.y+s.h); ctx.closePath(); ctx.fill(); }
-  ctx.shadowBlur=0;
-  for (const c of coinsArr) {
-    if (c.collected) continue;
-    ctx.fillStyle='#fbbf24'; ctx.shadowColor='#fbbf24'; ctx.shadowBlur=10;
-    ctx.beginPath(); ctx.arc(c.x+c.w/2,c.y+c.h/2,c.w/2,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
-  }
-  for (const d of doors) {
-    ctx.fillStyle = d.open?'rgba(0,255,159,0.2)':'rgba(255,71,87,0.2)';
-    ctx.strokeStyle = d.open?'#00ff9f':'#ff4757'; ctx.lineWidth=3; ctx.shadowColor=ctx.strokeStyle; ctx.shadowBlur=12;
-    ctx.fillRect(d.x,d.y,d.w,d.h); ctx.strokeRect(d.x,d.y,d.w,d.h); ctx.shadowBlur=0;
-  }
-  if (finish) {
-    ctx.fillStyle='rgba(124,58,237,0.3)'; ctx.strokeStyle='#7c3aed'; ctx.lineWidth=3; ctx.shadowColor='#7c3aed'; ctx.shadowBlur=15;
-    ctx.fillRect(finish.x,finish.y,finish.w,finish.h); ctx.strokeRect(finish.x,finish.y,finish.w,finish.h); ctx.shadowBlur=0;
-    ctx.fillStyle='#fff'; ctx.font='12px sans-serif'; ctx.textAlign='center'; ctx.fillText('BİTİŞ',finish.x+finish.w/2,finish.y-8);
-  }
-  for (const p of game.particles) { ctx.globalAlpha=p.life; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; }
-  const skin = SKINS.find(s=>s.id===activeSkin)||SKINS[0];
-  ctx.fillStyle = skin.color; ctx.shadowColor = skin.glow; ctx.shadowBlur=15;
-  ctx.fillRect(player.x,player.y,player.w,player.h); ctx.shadowBlur=0;
-  ctx.restore();
-}
-
-function gameLoop() {
-  if (game.running && !kb.active) { updatePlayer(); updateParticles(); checkDoor(); checkCoins(); checkSpikes(); checkFinish(); }
-  render();
-  requestAnimationFrame(gameLoop);
-}
-
-function startGame() {
-  initAudio();
-  ['startOverlay','winOverlay','pauseOverlay','marketOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
-  game.level=1; game.score=0; game.state='playing'; game.running=true;
-  initStars(); buildLevel(game.level); updateHUD();
-}
-function restartGame() { document.getElementById('pauseOverlay').classList.add('hidden'); startGame(); }
-function togglePause() {
-  if (game.state!=='playing') return;
-  if (game.running) { game.running=false; document.getElementById('pauseOverlay').classList.remove('hidden'); }
-  else if (!kb.active) resumeGame();
-}
-function resumeGame() { document.getElementById('pauseOverlay').classList.add('hidden'); document.getElementById('marketOverlay').classList.add('hidden'); game.running=true; }
-function showMenu() {
-  game.running=false; game.state='menu';
-  ['winOverlay','pauseOverlay','marketOverlay'].forEach(id=>document.getElementById(id).classList.add('hidden'));
-  document.getElementById('startOverlay').classList.remove('hidden');
-}
-function showMarket() { renderSkinList(); document.getElementById('startOverlay').classList.add('hidden'); document.getElementById('marketOverlay').classList.remove('hidden'); }
-function showMarketFromPause() { renderSkinList(); document.getElementById('pauseOverlay').classList.add('hidden'); document.getElementById('marketOverlay').classList.remove('hidden'); }
-function hideMarket() {
-  document.getElementById('marketOverlay').classList.add('hidden');
-  if (game.state==='playing') document.getElementById('pauseOverlay').classList.remove('hidden');
-  else document.getElementById('startOverlay').classList.remove('hidden');
-}
-function renderSkinList() {
-  const list = document.getElementById('skinList'); list.innerHTML='';
-  updateHUD();
-  SKINS.forEach(skin => {
-    const item = document.createElement('div');
-    item.className = 'skin-item' + (skin.id===activeSkin?' active':'') + (!skin.owned?' locked':'');
-    const preview = '<div class="skin-preview" style="background:'+skin.color+';color:'+skin.glow+'"></div>';
-    const name = '<span class="skin-name">'+skin.name+'</span>';
-    const status = skin.owned ? '<span>'+(skin.id===activeSkin?'✅':'☑️')+'</span>' : '<span class="skin-price">💰'+skin.price+'</span>';
-    item.innerHTML = preview+name+status;
-    item.onclick = () => selectOrBuySkin(skin);
-    list.appendChild(item);
-  });
-}
-function selectOrBuySkin(skin) {
-  if (skin.owned) { activeSkin=skin.id; renderSkinList(); }
-  else if (totalCoins>=skin.price) { totalCoins-=skin.price; skin.owned=true; ownedSkins.push(skin.id); activeSkin=skin.id; renderSkinList(); updateHUD(); playCoinSound(); }
-  else playFailSound();
-}
-function touchBtn(dir,val) { touchState[dir]=val; }
-
-window.addEventListener('keydown',(e)=>{
-  keysDown[e.code]=true;
-  if (kb.active) { const l=e.key.toUpperCase(); if (l.length===1 && l>='A' && l<='Z') handleKbInput(l); }
-  if (e.code==='Escape') togglePause();
-});
-window.addEventListener('keyup',(e)=>{ keysDown[e.code]=false; });
-
-initStars(); updateHUD(); gameLoop();
-</script>
-</body>
-</html>
+function playJumpSound() {
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
