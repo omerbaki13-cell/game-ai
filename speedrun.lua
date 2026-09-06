@@ -1,5 +1,5 @@
 -- TELEPORT (BAŞKA OYUNA/DÜNYAYA GEÇİNCE) OTOMATİK ÇALIŞMA KODU
-local scriptUrl = "https://raw.githubusercontent.com/omerbaki13-cell/game-ai/refs/heads/main/speedrun.lua"
+local scriptUrl = "https://raw.githubusercontent.com/omerbaki13-cell/game-ai/refs/heads/main/krono.lua"
 
 local queueFunction = queue_on_teleport or queueonteleport or (syn and syn.queue_on_teleport) or (fluxus and fluxus.queue_on_teleport)
 
