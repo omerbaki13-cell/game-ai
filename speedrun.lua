@@ -1,9 +1,11 @@
--- TELEPORT (BAŞKA OYUNA/DÜNYAYA GEÇİNCE) OTOMATİK ÇALIŞMA KODU
-local scriptUrl = "https://raw.githubusercontent.com/omerbaki13-cell/game-ai/refs/heads/main/krono.lua"
+-- AYAR DEĞİŞKENLERİ (Hafıza)
+getgenv().AutoReexecute = getgenv().AutoReexecute == nil and true or getgenv().AutoReexecute
 
+-- TELEPORT (BAŞKA OYUNA/DÜNYAYA GEÇİNCE) OTOMATİK ÇALIŞMA MANTIĞI
+local scriptUrl = "https://raw.githubusercontent.com/omerbaki13-cell/game-ai/refs/heads/main/speedrun.lua"
 local queueFunction = queue_on_teleport or queueonteleport or (syn and syn.queue_on_teleport) or (fluxus and fluxus.queue_on_teleport)
 
-if queueFunction then
+if queueFunction and getgenv().AutoReexecute then
     queueFunction(string.format([[
         repeat task.wait() until game:IsLoaded()
         loadstring(game:HttpGet("%s"))()
@@ -20,6 +22,9 @@ local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 
 local LocalPlayer = Players.LocalPlayer
+
+-- Bağlantıları (Connections) Takip Eden Tablo
+local connections = {}
 
 -- SES EFEKTLERİ (Roblox Sistem Sesleri)
 local function playSound(assetPath, volume, pitch)
@@ -49,6 +54,9 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 -- Ayar Değişkenleri
 local autoStartEnabled = false
 local bestTime = nil
+local currentThemeIndex = 1
+local rgbConnection = nil
+local rgbOffset = 0
 
 -- 1. "S" SİMGESİ (AÇ / KAPAT)
 local ToggleIconButton = Instance.new("TextButton")
@@ -168,6 +176,7 @@ SettingsCorner.Parent = SettingsToggleBtn
 local SettingsFrame = Instance.new("Frame")
 local SettingsUICorner = Instance.new("UICorner")
 local AutoStartBtn = Instance.new("TextButton")
+local AutoExecBtn = Instance.new("TextButton")
 local ThemeBtn = Instance.new("TextButton")
 local CloseScriptBtn = Instance.new("TextButton")
 
@@ -176,7 +185,7 @@ SettingsFrame.Parent = ScreenGui
 SettingsFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 SettingsFrame.BackgroundTransparency = 0.1
 SettingsFrame.Position = UDim2.new(0, 225, 0.4, 0)
-SettingsFrame.Size = UDim2.new(0, 160, 0, 130)
+SettingsFrame.Size = UDim2.new(0, 160, 0, 160)
 SettingsFrame.Visible = false
 
 SettingsUICorner.CornerRadius = UDim.new(0, 8)
@@ -186,8 +195,8 @@ SettingsUICorner.Parent = SettingsFrame
 AutoStartBtn.Name = "AutoStartBtn"
 AutoStartBtn.Parent = SettingsFrame
 AutoStartBtn.BackgroundColor3 = Color3.fromRGB(192, 57, 43)
-AutoStartBtn.Position = UDim2.new(0.05, 0, 0.10, 0)
-AutoStartBtn.Size = UDim2.new(0.9, 0, 0.25, 0)
+AutoStartBtn.Position = UDim2.new(0.05, 0, 0.08, 0)
+AutoStartBtn.Size = UDim2.new(0.9, 0, 0.20, 0)
 AutoStartBtn.Font = Enum.Font.SourceSansBold
 AutoStartBtn.Text = "Oto Başla: KAPALI"
 AutoStartBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -197,12 +206,27 @@ local AutoStartCorner = Instance.new("UICorner")
 AutoStartCorner.CornerRadius = UDim.new(0, 4)
 AutoStartCorner.Parent = AutoStartBtn
 
+-- Otomatik Yükleme (Auto Execute) Butonu
+AutoExecBtn.Name = "AutoExecBtn"
+AutoExecBtn.Parent = SettingsFrame
+AutoExecBtn.BackgroundColor3 = getgenv().AutoReexecute and Color3.fromRGB(39, 174, 96) or Color3.fromRGB(192, 57, 43)
+AutoExecBtn.Position = UDim2.new(0.05, 0, 0.31, 0)
+AutoExecBtn.Size = UDim2.new(0.9, 0, 0.20, 0)
+AutoExecBtn.Font = Enum.Font.SourceSansBold
+AutoExecBtn.Text = getgenv().AutoReexecute and "Oto Yükleme: AÇIK" or "Oto Yükleme: KAPALI"
+AutoExecBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoExecBtn.TextSize = 10
+
+local AutoExecCorner = Instance.new("UICorner")
+AutoExecCorner.CornerRadius = UDim.new(0, 4)
+AutoExecCorner.Parent = AutoExecBtn
+
 -- Tema Değiştirme Butonu
 ThemeBtn.Name = "ThemeBtn"
 ThemeBtn.Parent = SettingsFrame
 ThemeBtn.BackgroundColor3 = Color3.fromRGB(52, 152, 219)
-ThemeBtn.Position = UDim2.new(0.05, 0, 0.40, 0)
-ThemeBtn.Size = UDim2.new(0.9, 0, 0.25, 0)
+ThemeBtn.Position = UDim2.new(0.05, 0, 0.54, 0)
+ThemeBtn.Size = UDim2.new(0.9, 0, 0.20, 0)
 ThemeBtn.Font = Enum.Font.SourceSansBold
 ThemeBtn.Text = "Tema: Varsayılan"
 ThemeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -216,8 +240,8 @@ ThemeCorner.Parent = ThemeBtn
 CloseScriptBtn.Name = "CloseScriptBtn"
 CloseScriptBtn.Parent = SettingsFrame
 CloseScriptBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
-CloseScriptBtn.Position = UDim2.new(0.05, 0, 0.70, 0)
-CloseScriptBtn.Size = UDim2.new(0.9, 0, 0.25, 0)
+CloseScriptBtn.Position = UDim2.new(0.05, 0, 0.77, 0)
+CloseScriptBtn.Size = UDim2.new(0.9, 0, 0.20, 0)
 CloseScriptBtn.Font = Enum.Font.SourceSansBold
 CloseScriptBtn.Text = "❌ Scripti Kapat"
 CloseScriptBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -231,8 +255,6 @@ CloseScriptCorner.Parent = CloseScriptBtn
 local running = false
 local startTime = 0
 local elapsedTime = 0
-local currentThemeIndex = 1
-local rgbConnection = nil
 
 local themes = {
     {name = "Varsayılan", color = Color3.fromRGB(46, 204, 113)},
@@ -278,6 +300,10 @@ local function resetTimer()
     elapsedTime = 0
     TimeText.Text = "00:00:00.00"
     playSound(SOUND_RESET, 0.6, 0.9)
+    
+    if themes[currentThemeIndex].name == "RGB Gökkuşağı" then
+        rgbOffset = rgbOffset + 0.25
+    end
 end
 
 -- Tıklama Bağlantıları
@@ -308,6 +334,19 @@ AutoStartBtn.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Auto Execute (Oto Yükleme) Aç/Kapat
+AutoExecBtn.MouseButton1Click:Connect(function()
+    getgenv().AutoReexecute = not getgenv().AutoReexecute
+    playSound(SOUND_STOP, 0.5, 1)
+    if getgenv().AutoReexecute then
+        AutoExecBtn.Text = "Oto Yükleme: AÇIK"
+        AutoExecBtn.BackgroundColor3 = Color3.fromRGB(39, 174, 96)
+    else
+        AutoExecBtn.Text = "Oto Yükleme: KAPALI"
+        AutoExecBtn.BackgroundColor3 = Color3.fromRGB(192, 57, 43)
+    end
+end)
+
 -- Tema Ayar Değiştir
 ThemeBtn.MouseButton1Click:Connect(function()
     currentThemeIndex = currentThemeIndex + 1
@@ -324,7 +363,7 @@ ThemeBtn.MouseButton1Click:Connect(function()
 
     if theme.name == "RGB Gökkuşağı" then
         rgbConnection = RunService.RenderStepped:Connect(function()
-            local hue = (tick() % 3) / 3
+            local hue = ((tick() * 0.5) + rgbOffset) % 1
             local rainbowColor = Color3.fromHSV(hue, 1, 1)
             IconStroke.Color = rainbowColor
             ToggleBtn.BackgroundColor3 = rainbowColor
@@ -335,17 +374,25 @@ ThemeBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Scripti Kapatma Butonu İşlevi
+-- SCRIPT'I TAMAMEN KAPATMA VE TEMİZLEME
 CloseScriptBtn.MouseButton1Click:Connect(function()
     playSound(SOUND_RESET, 0.5, 0.7)
+    running = false
+    
+    -- Tüm event dinleyicilerini durdur
+    for _, conn in ipairs(connections) do
+        if conn then conn:Disconnect() end
+    end
+    if rgbConnection then rgbConnection:Disconnect() end
+    
     ScreenGui:Destroy()
 end)
 
--- Klavye Kontrolleri (PC)
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
+-- Klavye Kontrolleri (PC - Başlat/Durdur Kısayolu Q Tuşu Oldu)
+local inputConn = UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
 
-    if input.KeyCode == Enum.KeyCode.Space then
+    if input.KeyCode == Enum.KeyCode.Q then
         toggleTimer()
     elseif input.KeyCode == Enum.KeyCode.R then
         resetTimer()
@@ -359,9 +406,10 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
         end
     end
 end)
+table.insert(connections, inputConn)
 
--- Karakter Hareketiyle Otomatik Başlatma (Mobil Android & PC)
-RunService.RenderStepped:Connect(function()
+-- Karakter Hareketiyle Otomatik Başlatma (Mobil & PC)
+local renderConn = RunService.RenderStepped:Connect(function()
     if autoStartEnabled and not running then
         local character = LocalPlayer.Character
         if character then
@@ -372,14 +420,16 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
+table.insert(connections, renderConn)
 
 -- ÖLÜNCE OTOMATİK SIFIRLAMA
 local function setupDeathReset(character)
     local humanoid = character:WaitForChild("Humanoid", 5)
     if humanoid then
-        humanoid.Died:Connect(function()
+        local deathConn = humanoid.Died:Connect(function()
             resetTimer()
         end)
+        table.insert(connections, deathConn)
     end
 end
 
@@ -387,4 +437,5 @@ if LocalPlayer.Character then
     setupDeathReset(LocalPlayer.Character)
 end
 
-LocalPlayer.CharacterAdded:Connect(setupDeathReset)
+local charAddedConn = LocalPlayer.CharacterAdded:Connect(setupDeathReset)
+table.insert(connections, charAddedConn)
