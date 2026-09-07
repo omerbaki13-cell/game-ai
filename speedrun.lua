@@ -1,5 +1,7 @@
--- AYAR DEĞİŞKENLERİ (Hafıza)
-getgenv().AutoReexecute = getgenv().AutoReexecute == nil and true or getgenv().AutoReexecute
+-- AYAR DEĞİŞKENLERİ (Varsayılan olarak Otomatik Yükleme KAPALI)
+if getgenv().AutoReexecute == nil then
+    getgenv().AutoReexecute = false
+end
 
 -- TELEPORT (BAŞKA OYUNA/DÜNYAYA GEÇİNCE) OTOMATİK ÇALIŞMA MANTIĞI
 local scriptUrl = "https://raw.githubusercontent.com/omerbaki13-cell/game-ai/refs/heads/main/speedrun.lua"
@@ -301,8 +303,9 @@ local function resetTimer()
     TimeText.Text = "00:00:00.00"
     playSound(SOUND_RESET, 0.6, 0.9)
     
+    -- RGB Temasında Sıfırlanınca Renk Geçiş Kaydırması
     if themes[currentThemeIndex].name == "RGB Gökkuşağı" then
-        rgbOffset = rgbOffset + 0.25
+        rgbOffset = (rgbOffset + 0.33) % 1
     end
 end
 
@@ -363,14 +366,20 @@ ThemeBtn.MouseButton1Click:Connect(function()
 
     if theme.name == "RGB Gökkuşağı" then
         rgbConnection = RunService.RenderStepped:Connect(function()
-            local hue = ((tick() * 0.5) + rgbOffset) % 1
-            local rainbowColor = Color3.fromHSV(hue, 1, 1)
-            IconStroke.Color = rainbowColor
-            ToggleBtn.BackgroundColor3 = rainbowColor
+            local hue1 = ((tick() * 0.5) + rgbOffset) % 1
+            local hue2 = ((tick() * 0.5) + rgbOffset + 0.5) % 1
+            
+            local color1 = Color3.fromHSV(hue1, 1, 1)
+            local color2 = Color3.fromHSV(hue2, 1, 1)
+            
+            IconStroke.Color = color1
+            ToggleBtn.BackgroundColor3 = color1
+            ResetBtn.BackgroundColor3 = color2
         end)
     else
         IconStroke.Color = theme.color
         ToggleBtn.BackgroundColor3 = theme.color
+        ResetBtn.BackgroundColor3 = Color3.fromRGB(231, 76, 60) -- Varsayılan kırmızı
     end
 end)
 
@@ -388,7 +397,7 @@ CloseScriptBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
--- Klavye Kontrolleri (PC - Başlat/Durdur Kısayolu Q Tuşu Oldu)
+-- Klavye Kontrolleri (PC - Başlat/Durdur Q Tuşu)
 local inputConn = UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
 
